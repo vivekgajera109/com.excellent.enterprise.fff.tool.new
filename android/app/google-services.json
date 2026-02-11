@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "992840934015",
+    "project_id": "fff-skin-tool-new-5cfd8",
+    "storage_bucket": "fff-skin-tool-new-5cfd8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992840934015:android:ba4d135f504f6ca22c954a",
+        "android_client_info": {
+          "package_name": "com.excellent.enterprise.fff.tool.new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxVVJOBJRCd6dXdo5EKj9ObzRNsHxQuD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
