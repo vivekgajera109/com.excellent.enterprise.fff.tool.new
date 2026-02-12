@@ -12,13 +12,26 @@ import 'package:fff_skin_tools/common/common_button/common_button.dart';
 import 'package:fff_skin_tools/constants/app_colors.dart';
 import 'package:fff_skin_tools/provider/home_provider.dart';
 import 'package:fff_skin_tools/model/home_item_model.dart';
+import 'package:fff_skin_tools/helper/analytics_service.dart';
 
 import 'package:fff_skin_tools/screen/characters_screen.dart';
 import 'package:fff_skin_tools/screen/settings_screen.dart';
 import 'package:fff_skin_tools/screen/dimond_tips_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Log screen view
+    AnalyticsService.logScreenView(screenName: 'HomeScreen');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,6 +228,13 @@ class HomeScreen extends StatelessWidget {
     required HomeProvider provider,
     required String title,
   }) async {
+    // Log analytics
+    await AnalyticsService.logItemClick(
+      itemId: title.toLowerCase().replaceAll(' ', '_'),
+      itemName: title,
+      category: 'home_dashboard',
+    );
+
     await CommonOnTap.openUrl();
     await Future.delayed(const Duration(milliseconds: 600));
 

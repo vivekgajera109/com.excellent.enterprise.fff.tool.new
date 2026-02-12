@@ -151,14 +151,14 @@ class CharactersDetalisScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    "Ready to Unlock?",
+                                    "Item Overview",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),
                                   ),
-                                  Text(
-                                    "Finish the steps to claim this item",
+                                  const Text(
+                                    "Review detailed character technicalities",
                                     style: TextStyle(
                                       color: AppColors.darkTextSecondary,
                                       fontSize: 13,
@@ -171,7 +171,7 @@ class CharactersDetalisScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         ModernGradientButton(
-                          text: "CLAIM NOW",
+                          text: "GET DETAILS",
                           onPressed: () => _onClaim(context),
                         ),
                       ],

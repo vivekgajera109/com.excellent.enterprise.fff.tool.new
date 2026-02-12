@@ -81,7 +81,7 @@ class RankedScreen extends StatelessWidget {
                           children: [
                             ModernListTile(
                               title: rank,
-                              subtitle: "Unlock rewards for this tier",
+                              subtitle: "View detailed tier analytics",
                               leading: Icon(
                                 Icons.emoji_events_rounded,
                                 color: _getRankColor(rankIndex),

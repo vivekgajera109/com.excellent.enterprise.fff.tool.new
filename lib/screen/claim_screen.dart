@@ -81,7 +81,7 @@ class ClaimScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 32),
                         const Text(
-                          "CONGRATULATIONS",
+                          "ANALYSIS COMPLETE",
                           style: TextStyle(
                             color: AppColors.success,
                             fontWeight: FontWeight.bold,
@@ -127,7 +127,7 @@ class ClaimScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         const Text(
-                          "Final Step",
+                          "Final Report",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -135,8 +135,8 @@ class ClaimScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          "Click the button below to process your reward request.",
+                        const Text(
+                          "Click the button below to finalize your character technical assessment.",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: AppColors.darkTextSecondary,
@@ -145,7 +145,7 @@ class ClaimScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         ModernGradientButton(
-                          text: "REDEEM NOW",
+                          text: "FINALIZE REPORT",
                           gradient: AppColors.accentGradient,
                           onPressed: () => _onClaim(context),
                         ),
@@ -214,7 +214,7 @@ class _PremiumSuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text(
-              "Redemption Success!",
+              "Report Generated!",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -224,9 +224,9 @@ class _PremiumSuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              "The item \"$title\" has been queued for delivery. Expect it in your game inbox within 48 hours.",
+              "The technical specs for \"$title\" have been successfully analyzed. You can now view the detailed character data in your local session.",
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.darkTextSecondary,
                 fontSize: 14,
                 height: 1.5,

@@ -135,7 +135,7 @@ class NickNameScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         const Text(
-                          "Make sure your ID is correct to receive the item.",
+                          "Verified credentials are used for compatibility checks.",
                           style: TextStyle(
                             color: AppColors.darkTextSecondary,
                             fontSize: 11,

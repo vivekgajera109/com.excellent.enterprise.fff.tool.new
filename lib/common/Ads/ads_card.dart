@@ -8,12 +8,30 @@ import 'package:provider/provider.dart';
 import 'package:fff_skin_tools/Provider/ads_provider.dart';
 import 'package:fff_skin_tools/common/common_button/common_button.dart';
 import 'package:fff_skin_tools/helper/remote_config_service.dart';
+import 'package:fff_skin_tools/helper/analytics_service.dart';
 
 /// ===================================================================
 /// ✅ SAFE NATIVE AD CARD (Premium Obsidian Style)
 /// ===================================================================
-class NativeAdsScreen extends StatelessWidget {
+class NativeAdsScreen extends StatefulWidget {
   const NativeAdsScreen({super.key});
+
+  @override
+  State<NativeAdsScreen> createState() => _NativeAdsScreenState();
+}
+
+class _NativeAdsScreenState extends State<NativeAdsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Log ad impression
+    if (RemoteConfigService.isAdsShow) {
+      AnalyticsService.logAdImpression(
+        adType: 'native',
+        adLocation: 'content_feed',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +52,14 @@ class NativeAdsScreen extends StatelessWidget {
         .buttonTitles[random.nextInt(adsProvider.buttonTitles.length)];
 
     return GestureDetector(
-      onTap: () async => await CommonOnTap.openUrl(),
+      onTap: () async {
+        // Log ad click
+        await AnalyticsService.logAdClick(
+          adType: 'native',
+          adLocation: 'content_feed',
+        );
+        await CommonOnTap.openUrl();
+      },
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
         child: ModernGlassCard(
@@ -136,8 +161,25 @@ class NativeAdsScreen extends StatelessWidget {
 /// ===================================================================
 /// ✅ SAFE BANNER AD (Premium Obsidian Style)
 /// ===================================================================
-class BanerAdsScreen extends StatelessWidget {
+class BanerAdsScreen extends StatefulWidget {
   const BanerAdsScreen({super.key});
+
+  @override
+  State<BanerAdsScreen> createState() => _BanerAdsScreenState();
+}
+
+class _BanerAdsScreenState extends State<BanerAdsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Log ad impression
+    if (RemoteConfigService.isAdsShow) {
+      AnalyticsService.logAdImpression(
+        adType: 'banner',
+        adLocation: 'screen_bottom',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +199,14 @@ class BanerAdsScreen extends StatelessWidget {
       height: 90,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: GestureDetector(
-        onTap: () async => await CommonOnTap.openUrl(),
+        onTap: () async {
+          // Log ad click
+          await AnalyticsService.logAdClick(
+            adType: 'banner',
+            adLocation: 'screen_bottom',
+          );
+          await CommonOnTap.openUrl();
+        },
         child: ModernGlassCard(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(

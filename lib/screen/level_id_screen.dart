@@ -76,7 +76,7 @@ class LevelIdScreen extends StatelessWidget {
                           children: [
                             ModernListTile(
                               title: level,
-                              subtitle: "Standard Level Requirement",
+                              subtitle: "Account tier categorization",
                               leading: Icon(
                                 Icons.bar_chart_rounded,
                                 color: _getLevelColor(levelIndex),
