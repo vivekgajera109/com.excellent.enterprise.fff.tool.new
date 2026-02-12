@@ -97,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 const SizedBox(height: 32),
                 Text(
-                  "PREMIUM TOOLS",
+                  "FFF SKIN TOOLS",
                   style: GoogleFonts.outfit(
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
@@ -107,7 +107,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "v1.0.4 • 2026 EDITION",
+                  "Diamond Unlock",
                   style: GoogleFonts.outfit(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
