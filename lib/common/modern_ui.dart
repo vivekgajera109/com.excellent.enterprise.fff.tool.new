@@ -1,8 +1,9 @@
 import 'package:fff_skin_tools/model/home_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 
-/// 2026 Premium Gradient Button with subtle glow
+/// 2026 Premium Gradient Button with subtle glow and haptic-ready design
 class ModernGradientButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -30,11 +31,11 @@ class ModernGradientButton extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         gradient: gradient,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: gradient.colors.first.withOpacity(0.3),
-            blurRadius: 20,
+            color: gradient.colors.first.withOpacity(0.35),
+            blurRadius: 18,
             offset: const Offset(0, 8),
           ),
         ],
@@ -45,29 +46,30 @@ class ModernGradientButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          padding: EdgeInsets.zero,
         ),
         child: isLoading
             ? const SizedBox(
                 height: 24,
                 width: 24,
                 child: CircularProgressIndicator(
-                    color: Colors.white, strokeWidth: 2),
+                    color: Colors.white, strokeWidth: 2.5),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
                     Icon(icon, size: 20, color: Colors.white),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 12),
                   ],
                   Text(
-                    text,
-                    style: const TextStyle(
+                    text.toUpperCase(),
+                    style: GoogleFonts.outfit(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                      letterSpacing: 0.5,
+                      letterSpacing: 1.2,
                     ),
                   ),
                 ],
@@ -77,7 +79,7 @@ class ModernGradientButton extends StatelessWidget {
   }
 }
 
-/// Glassmorphism Card with blur effect and subtle border
+/// Glassmorphism Card with real-time blur effect and premium border
 class ModernGlassCard extends StatelessWidget {
   final Widget child;
   final double? width;
@@ -106,15 +108,22 @@ class ModernGlassCard extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.darkCard.withOpacity(0.7)
-            : Colors.white.withOpacity(0.8),
+            ? AppColors.darkCard.withOpacity(0.8)
+            : Colors.white.withOpacity(0.9),
         borderRadius: borderRadius ?? BorderRadius.circular(24),
         border: Border.all(
           color: isDark
-              ? Colors.white.withOpacity(0.08)
-              : Colors.black.withOpacity(0.05),
-          width: 1,
+              ? Colors.white.withOpacity(0.12)
+              : Colors.black.withOpacity(0.08),
+          width: 1.2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
       ),
       child: ClipRRect(
         borderRadius: borderRadius ?? BorderRadius.circular(24),
@@ -149,28 +158,38 @@ class ModernListTile extends StatelessWidget {
     return ModernGlassCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         onTap: onTap,
         leading: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            gradient: AppColors.primaryGradient.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(14),
           ),
-          child: leading,
+          child: IconTheme(
+            data: const IconThemeData(color: AppColors.primary, size: 22),
+            child: leading,
+          ),
         ),
         title: Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 17),
         ),
-        subtitle: subtitle != null ? Text(subtitle!) : null,
-        trailing: trailing ?? const Icon(Icons.chevron_right, size: 20),
+        subtitle: subtitle != null
+            ? Text(subtitle!,
+                style:
+                    TextStyle(color: AppColors.textSecondary.withOpacity(0.7)))
+            : null,
+        trailing: trailing ??
+            const Icon(Icons.chevron_right_rounded,
+                size: 24, color: AppColors.primary),
       ),
     );
   }
 }
 
-/// Premium Item Card for grids
+/// Premium Animated Item Card for grids
 class ModernHomeCard extends StatelessWidget {
   final HomeItemModel item;
   final VoidCallback onTap;
@@ -183,55 +202,72 @@ class ModernHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: ModernGlassCard(
-        padding: EdgeInsets.zero,
-        child: Column(
-          children: [
-            AspectRatio(
-              aspectRatio: 1,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.primary.withOpacity(0.05),
-                      Colors.transparent,
-                    ],
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.95, end: 1.0),
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutBack,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: child,
+        );
+      },
+      child: GestureDetector(
+        onTap: onTap,
+        child: ModernGlassCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AspectRatio(
+                aspectRatio: 1.1,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.primary.withOpacity(0.08),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                  child: Hero(
+                    tag: item.title,
+                    child: Image.asset(
+                      item.image!,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
-                child: Hero(
-                  tag: item.title,
-                  child: Image.asset(
-                    item.image!,
-                    fit: BoxFit.contain,
+              ),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.05),
+                  ),
+                  child: Text(
+                    item.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.outfit(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.2,
+                      color: AppColors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-              ),
-              child: Text(
-                item.title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

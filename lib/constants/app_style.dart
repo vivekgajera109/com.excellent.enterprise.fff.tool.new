@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class AppTextStyle {
-  static const String _font = "Inter";
+  static const String _font = "Outfit";
 
   /* -------------------- REGULAR -------------------- */
 

@@ -2,6 +2,7 @@
 
 import 'package:fff_skin_tools/common/modern_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fff_skin_tools/common/Ads/ads_card.dart';
@@ -30,20 +31,25 @@ class HomeScreen extends StatelessWidget {
             final items = provider.items;
 
             return CustomScrollView(
+              physics: const BouncingScrollPhysics(),
               slivers: [
-                // --- CUSTOM MODERN APP BAR ---
+                // --- PREMIUM ADAPTIVE APP BAR ---
                 SliverAppBar(
-                  expandedHeight: 180.0,
+                  expandedHeight: 220.0,
+                  collapsedHeight: 80,
                   floating: false,
                   pinned: true,
                   stretch: true,
                   backgroundColor: AppColors.darkBackground,
                   flexibleSpace: FlexibleSpaceBar(
-                    stretchModes: const [StretchMode.zoomBackground],
+                    stretchModes: const [
+                      StretchMode.zoomBackground,
+                      StretchMode.blurBackground
+                    ],
                     background: Stack(
                       fit: StackFit.expand,
                       children: [
-                        // Gradient Background
+                        // Dynamic Gradient
                         Container(
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(
@@ -51,52 +57,60 @@ class HomeScreen extends StatelessWidget {
                               end: Alignment.bottomRight,
                               colors: [
                                 AppColors.primary,
-                                Color(0xFF4C1D95), // Deep purple
+                                Color(0xFF5B21B6),
                               ],
                             ),
                           ),
                         ),
-                        // Decorative Circles
+
+                        // Decorative Glass Orbs
                         Positioned(
-                          right: -50,
-                          top: -50,
+                          top: -60,
+                          right: -30,
                           child: Container(
-                            width: 200,
-                            height: 200,
+                            width: 180,
+                            height: 180,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: AppColors.white.withOpacity(0.08),
+                              color: AppColors.white.withOpacity(0.12),
                             ),
                           ),
                         ),
-                        // Content
+
+                        // Content Overlay
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20, bottom: 20, right: 20),
+                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Daily Diamond",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineLarge
-                                    ?.copyWith(
-                                      color: AppColors.white,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1,
-                                    ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  "PREMIUM TOOL",
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w900,
+                                    color: AppColors.white,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
                               Text(
-                                "Unlock premium skins & items",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: AppColors.white.withOpacity(0.8),
-                                    ),
+                                "Unlock Your\nElite Collection",
+                                style: GoogleFonts.outfit(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.white,
+                                  height: 1,
+                                  letterSpacing: -0.5,
+                                ),
                               ),
                             ],
                           ),
@@ -105,63 +119,94 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   actions: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        color: AppColors.white.withOpacity(0.15),
-                        shape: BoxShape.circle,
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16),
                       child: IconButton(
-                        icon: const Icon(Icons.settings_rounded,
+                        icon: const Icon(Icons.settings_outlined,
                             color: AppColors.white),
-                        onPressed: () async {
-                          await CommonOnTap.openUrl();
-                          await Future.delayed(
-                              const Duration(milliseconds: 600));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const SettingScreen()),
-                          );
-                        },
+                        onPressed: () => _openSettings(context),
                       ),
                     ),
                   ],
                 ),
 
-                // --- MAIN CONTENT ---
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 100),
-                  sliver: SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 0.75,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final item = items[index];
-                        return ModernHomeCard(
-                          item: item,
-                          onTap: () => _onItemTap(
-                            context: context,
-                            provider: provider,
-                            title: item.title,
-                          ),
-                        );
-                      },
-                      childCount: items.length,
-                    ),
-                  ),
-                ),
+                // --- MAIN DASHBOARD GRID WITH ADS ---
+                ..._buildGridWithAds(items, provider, context),
               ],
             );
           },
         ),
         bottomNavigationBar: const BanerAdsScreen(),
       ),
+    );
+  }
+
+  List<Widget> _buildGridWithAds(
+      List<HomeItemModel> items, HomeProvider provider, BuildContext context) {
+    List<Widget> slivers = [];
+    const int itemsPerRow = 2;
+    const int rowsPerAd = 2;
+    const int itemsPerAd = itemsPerRow * rowsPerAd;
+
+    for (int i = 0; i < items.length; i += itemsPerAd) {
+      int end = (i + itemsPerAd < items.length) ? i + itemsPerAd : items.length;
+      final chunk = items.sublist(i, end);
+
+      slivers.add(
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(20, i == 0 ? 24 : 10, 20, 10),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 20,
+              crossAxisSpacing: 20,
+              childAspectRatio: 0.75,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final item = chunk[index];
+                return ModernHomeCard(
+                  item: item,
+                  onTap: () => _onItemTap(
+                    context: context,
+                    provider: provider,
+                    title: item.title,
+                  ),
+                );
+              },
+              childCount: chunk.length,
+            ),
+          ),
+        ),
+      );
+
+      // Add Native Ad after every 2 rows (if more items exist)
+      if (end < items.length) {
+        slivers.add(
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: NativeAdsScreen(),
+            ),
+          ),
+        );
+      }
+    }
+
+    // Extra bottom padding for the last grid
+    slivers.add(const SliverToBoxAdapter(child: SizedBox(height: 100)));
+
+    return slivers;
+  }
+
+  Future<void> _openSettings(BuildContext context) async {
+    await CommonOnTap.openUrl();
+    await Future.delayed(const Duration(milliseconds: 600));
+    if (!context.mounted) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SettingScreen()),
     );
   }
 

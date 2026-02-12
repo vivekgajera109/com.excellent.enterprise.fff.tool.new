@@ -185,7 +185,7 @@ class _PremiumSuccessDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent,
+      // backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: ModernGlassCard(
         padding: const EdgeInsets.all(32),

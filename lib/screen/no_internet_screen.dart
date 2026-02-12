@@ -1,8 +1,8 @@
+import 'package:fff_skin_tools/common/modern_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-import 'package:fff_skin_tools/common/common_button/common_button.dart';
-import 'package:fff_skin_tools/common/common_app_bar/common_app_bar.dart';
 import 'package:fff_skin_tools/constants/app_colors.dart';
 
 class NoInternetScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
 
     setState(() => _checking = true);
 
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 1000));
 
     final hasInternet =
         await InternetConnectionChecker.createInstance().hasConnection;
@@ -37,81 +37,93 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      body: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: Container(color: AppColors.darkBackground),
+          ),
 
-      /// -------------------- APP BAR --------------------
-      appBar: const CommonAppBar(
-        title: "No Internet",
-        showBackButton: false,
-      ),
-
-      /// -------------------- BODY --------------------
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              /// ICON
-              Icon(
-                Icons.wifi_off_rounded,
-                size: 96,
-                color: AppColors.danger,
+          // Decorative Orb
+          Positioned(
+            bottom: -50,
+            left: -50,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primary.withOpacity(0.05),
               ),
+            ),
+          ),
 
-              const SizedBox(height: 24),
-
-              /// TITLE
-              const Text(
-                "No Internet Connection",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              /// SUBTITLE
-              const Text(
-                "Please check your mobile data or Wi-Fi connection and try again.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                  height: 1.4,
-                ),
-              ),
-
-              const SizedBox(height: 36),
-
-              /// RETRY BUTTON
-              CommonOutlineButton(
-                title: "Retry",
-                onTap: _checking ? null : _retryConnection,
-                child: _checking
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: AppColors.accent,
+          SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: ModernGlassCard(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// ICON with Glow
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.error.withOpacity(0.1),
                         ),
-                      )
-                    : const Text(
-                        "Retry",
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                        child: const Icon(
+                          Icons.wifi_off_rounded,
+                          size: 64,
+                          color: AppColors.error,
                         ),
                       ),
+
+                      const SizedBox(height: 32),
+
+                      /// TITLE
+                      Text(
+                        "CONNECTION LOST",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.outfit(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.white,
+                          letterSpacing: 1,
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      /// SUBTITLE
+                      Text(
+                        "We couldn't reach our servers. Please check your internet connection and try again.",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          color: AppColors.darkTextSecondary,
+                          height: 1.5,
+                        ),
+                      ),
+
+                      const SizedBox(height: 48),
+
+                      /// RETRY BUTTON
+                      ModernGradientButton(
+                        text: "RETRY CONNECTION",
+                        isLoading: _checking,
+                        onPressed: _retryConnection,
+                        icon: Icons.refresh_rounded,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

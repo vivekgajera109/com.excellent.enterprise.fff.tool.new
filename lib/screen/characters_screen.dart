@@ -51,49 +51,20 @@ class CharactersScreen extends StatelessWidget {
                 ),
               ),
 
-              ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-                itemCount: characters.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return const Padding(
-                      padding: EdgeInsets.only(bottom: 20),
+              CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  // --- TOP AD ---
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
                       child: BanerAdsScreen(),
-                    );
-                  }
-
-                  // Group by 2 for the grid-like feel but in a list
-                  if ((index - 1) % 2 != 0) return const SizedBox.shrink();
-
-                  final item1 = characters[index - 1];
-                  final hasNext = index < characters.length;
-                  final item2 = hasNext ? characters[index] : null;
-
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ModernHomeCard(
-                            item: item1,
-                            onTap: () =>
-                                _openDetails(context, item1, isSquared),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: item2 != null
-                              ? ModernHomeCard(
-                                  item: item2,
-                                  onTap: () =>
-                                      _openDetails(context, item2, isSquared),
-                                )
-                              : const SizedBox.shrink(),
-                        ),
-                      ],
                     ),
-                  );
-                },
+                  ),
+
+                  // --- GRID CONTENT WITH ADS ---
+                  ..._buildGridWithAds(context),
+                ],
               ),
             ],
           ),
@@ -101,6 +72,58 @@ class CharactersScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildGridWithAds(BuildContext context) {
+    List<Widget> slivers = [];
+    const int itemsPerAd = 4; // 2 rows * 2 items
+
+    for (int i = 0; i < characters.length; i += itemsPerAd) {
+      int end = (i + itemsPerAd < characters.length)
+          ? i + itemsPerAd
+          : characters.length;
+      final chunk = characters.sublist(i, end);
+
+      slivers.add(
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 20,
+              crossAxisSpacing: 20,
+              childAspectRatio: 0.75,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final item = chunk[index];
+                return ModernHomeCard(
+                  item: item,
+                  onTap: () => _openDetails(context, item, isSquared),
+                );
+              },
+              childCount: chunk.length,
+            ),
+          ),
+        ),
+      );
+
+      if (end < characters.length) {
+        slivers.add(
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: NativeAdsScreen(),
+            ),
+          ),
+        );
+      }
+    }
+
+    // Bottom spacing
+    slivers.add(const SliverToBoxAdapter(child: SizedBox(height: 100)));
+
+    return slivers;
   }
 }
 

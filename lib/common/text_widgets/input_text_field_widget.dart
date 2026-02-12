@@ -1,11 +1,9 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants/app_colors.dart';
-import '../../constants/app_style.dart';
 import 'validator.dart';
 
 /// ------------------------------------------------------------
@@ -172,7 +170,7 @@ class TextAreaWidget extends StatelessWidget {
 }
 
 /// ------------------------------------------------------------
-/// CORE PREMIUM DARK TEXT FIELD
+/// CORE PREMIUM 2026 GLASS TEXT FIELD
 /// ------------------------------------------------------------
 Widget textFormField({
   Key? fieldKey,
@@ -198,14 +196,17 @@ Widget textFormField({
 }) {
   return Container(
     decoration: BoxDecoration(
-      color: AppColors.card,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: AppColors.divider, width: 1.2),
+      color: AppColors.darkCard.withOpacity(0.5),
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(
+        color: AppColors.darkBorder.withOpacity(0.5),
+        width: 1.5,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.35),
-          blurRadius: 12,
-          offset: const Offset(0, 4),
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 20,
+          offset: const Offset(0, 10),
         ),
       ],
     ),
@@ -225,25 +226,45 @@ Widget textFormField({
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
       validator: validator,
-      cursorColor: AppColors.accent,
-      style: AppTextStyle.regular16,
+      cursorColor: AppColors.primary,
+      style: GoogleFonts.outfit(
+        color: AppColors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
       decoration: InputDecoration(
         isDense: true,
         filled: true,
         fillColor: Colors.transparent,
         counterText: "",
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         hintText: hintText,
-        hintStyle: AppTextStyle.regular14.copyWith(
-          color: AppColors.textSecondary,
+        hintStyle: GoogleFonts.outfit(
+          color: AppColors.darkTextSecondary.withOpacity(0.5),
+          fontSize: 15,
         ),
-        prefixIcon: prefixIcon,
+        prefixIcon: prefixIcon != null
+            ? Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: IconTheme(
+                  data: const IconThemeData(color: AppColors.primary, size: 22),
+                  child: prefixIcon,
+                ),
+              )
+            : null,
         suffixIcon: suffixIcon,
         border: InputBorder.none,
-        errorStyle: AppTextStyle.error14,
+        errorStyle: GoogleFonts.outfit(
+          color: AppColors.error,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
         labelText: labelText,
+        labelStyle: GoogleFonts.outfit(color: AppColors.primary),
         helperText: helperText,
+        helperStyle: GoogleFonts.outfit(
+            color: AppColors.darkTextSecondary, fontSize: 11),
       ),
     ),
   );

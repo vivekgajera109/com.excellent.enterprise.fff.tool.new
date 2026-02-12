@@ -1,5 +1,8 @@
 import 'dart:math';
+import 'package:fff_skin_tools/common/modern_ui.dart';
+import 'package:fff_skin_tools/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fff_skin_tools/Provider/ads_provider.dart';
@@ -7,17 +10,14 @@ import 'package:fff_skin_tools/common/common_button/common_button.dart';
 import 'package:fff_skin_tools/helper/remote_config_service.dart';
 
 /// ===================================================================
-/// ✅ SAFE NATIVE AD CARD (Firebase Controlled)
+/// ✅ SAFE NATIVE AD CARD (Premium Obsidian Style)
 /// ===================================================================
 class NativeAdsScreen extends StatelessWidget {
   const NativeAdsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 🔥 Firebase control
-    if (!RemoteConfigService.isAdsShow) {
-      return const SizedBox.shrink();
-    }
+    if (!RemoteConfigService.isAdsShow) return const SizedBox.shrink();
 
     final adsProvider = context.watch<AdsProvider>();
     final random = Random();
@@ -35,31 +35,28 @@ class NativeAdsScreen extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async => await CommonOnTap.openUrl(),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        child: ModernGlassCard(
+          padding: EdgeInsets.zero,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              /// ---------------- HEADER ----------------
+              // --- HEADER ---
               Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        smallLogo,
-                        height: 42,
-                        width: 42,
-                        fit: BoxFit.contain,
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      child: Image.asset(smallLogo,
+                          height: 32, width: 32, fit: BoxFit.contain),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,9 +65,10 @@ class NativeAdsScreen extends StatelessWidget {
                             title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
+                            style: GoogleFonts.outfit(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.white,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -78,9 +76,9 @@ class NativeAdsScreen extends StatelessWidget {
                             subtitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey,
+                            style: GoogleFonts.outfit(
+                              fontSize: 12,
+                              color: AppColors.darkTextSecondary,
                             ),
                           ),
                         ],
@@ -88,18 +86,20 @@ class NativeAdsScreen extends StatelessWidget {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(6),
+                        color: AppColors.accent.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                            color: AppColors.accent.withOpacity(0.3), width: 1),
                       ),
-                      child: const Text(
-                        "Ad",
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                      child: Text(
+                        "Spored",
+                        style: GoogleFonts.outfit(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.accent,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
@@ -107,20 +107,21 @@ class NativeAdsScreen extends StatelessWidget {
                 ),
               ),
 
-              /// ---------------- IMAGE ----------------
-              Image.asset(
-                imagePath,
-                width: double.infinity,
-                height: 150,
-                fit: BoxFit.cover,
+              // --- MAIN AD IMAGE ---
+              ClipRRect(
+                child: Image.asset(
+                  imagePath,
+                  width: double.infinity,
+                  height: 180,
+                  fit: BoxFit.cover,
+                ),
               ),
 
-              /// ---------------- CTA ----------------
+              // --- ACTION BAR ---
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: CommonButton(
-                  title: buttonTitle,
+                padding: const EdgeInsets.all(16),
+                child: ModernGradientButton(
+                  text: buttonTitle.toUpperCase(),
                   onPressed: () async => await CommonOnTap.openUrl(),
                 ),
               ),
@@ -133,17 +134,14 @@ class NativeAdsScreen extends StatelessWidget {
 }
 
 /// ===================================================================
-/// ✅ SAFE BANNER AD (Firebase Controlled)
+/// ✅ SAFE BANNER AD (Premium Obsidian Style)
 /// ===================================================================
 class BanerAdsScreen extends StatelessWidget {
   const BanerAdsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 🔥 Firebase control
-    if (!RemoteConfigService.isAdsShow) {
-      return const SizedBox.shrink();
-    }
+    if (!RemoteConfigService.isAdsShow) return const SizedBox.shrink();
 
     final adsProvider = context.watch<AdsProvider>();
     final random = Random();
@@ -155,72 +153,95 @@ class BanerAdsScreen extends StatelessWidget {
     final smallLogo = adsProvider.nativeDimondImages[
         random.nextInt(adsProvider.nativeDimondImages.length)];
 
-    return SizedBox(
-      height: 80,
+    return Container(
+      height: 90,
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: GestureDetector(
         onTap: () async => await CommonOnTap.openUrl(),
-        child: Card(
-          margin: EdgeInsets.zero,
-          elevation: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                Image.asset(
-                  smallLogo,
-                  height: 40,
-                  width: 40,
-                  fit: BoxFit.contain,
+        child: ModernGlassCard(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
+                child: Image.asset(smallLogo,
+                    height: 36, width: 36, fit: BoxFit.contain),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.outfit(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey,
-                        ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.outfit(
+                        fontSize: 11,
+                        color: AppColors.darkTextSecondary,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 72,
-                  height: 32,
-                  child: DecoratedBox(
+              ),
+              const SizedBox(width: 12),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 70,
+                    height: 32,
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(8),
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        "Install",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                        "GET",
+                        style: GoogleFonts.outfit(
+                          color: AppColors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1,
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "AD",
+                    style: GoogleFonts.outfit(
+                      fontSize: 8,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.darkTextSecondary.withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

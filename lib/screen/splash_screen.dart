@@ -1,6 +1,5 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:fff_skin_tools/common/common_button/common_button.dart';
 import 'package:fff_skin_tools/constants/app_colors.dart';
@@ -38,9 +37,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) =>
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) =>
             onboardingDone ? const HomeScreen() : const OnboardingScreen(),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 800),
       ),
     );
   }
@@ -48,14 +50,81 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Image(
-              height: 150,
-              image: AssetImage('assets/image/app_logo.png'),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          color: AppColors.darkBackground,
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Decorative Orbs
+            Positioned(
+              top: -100,
+              right: -100,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.primary.withOpacity(0.05),
+                ),
+              ),
+            ),
+
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo with Glow
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.1),
+                        blurRadius: 60,
+                        spreadRadius: 20,
+                      ),
+                    ],
+                  ),
+                  child: const Image(
+                    height: 140,
+                    width: 140,
+                    image: AssetImage('assets/image/app_logo.png'),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  "PREMIUM TOOLS",
+                  style: GoogleFonts.outfit(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.white,
+                    letterSpacing: 4,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "v1.0.4 • 2026 EDITION",
+                  style: GoogleFonts.outfit(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.darkTextSecondary,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 64),
+                const SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
