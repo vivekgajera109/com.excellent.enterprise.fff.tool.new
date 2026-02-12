@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:fff_skin_tools/common/modern_ui.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fff_skin_tools/common/Ads/ads_card.dart';
@@ -8,9 +9,6 @@ import 'package:fff_skin_tools/common/common_button/common_button.dart';
 import 'package:fff_skin_tools/common/global_wrapper.dart';
 
 import 'package:fff_skin_tools/constants/app_colors.dart';
-import 'package:fff_skin_tools/constants/app_style.dart';
-import 'package:fff_skin_tools/constants/static_decoration.dart';
-
 import 'package:fff_skin_tools/model/home_item_model.dart';
 import 'package:fff_skin_tools/screen/nick_name_screen.dart';
 
@@ -24,60 +22,166 @@ class CharactersDetalisScreen extends StatelessWidget {
     this.isSquared = false,
   });
 
-  Color get accentColor => const Color(0xFFFFC857);
-
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return GlobalWrapper(
       child: CommonWillPopScope(
         child: Scaffold(
-          backgroundColor: AppColors.background,
-
-          /// ---------------- APP BAR ----------------
           appBar: CommonAppBar(
             title: characters.title,
             showBackButton: true,
           ),
-
-          /// ---------------- BODY ----------------
-          body: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
+          body: Stack(
             children: [
-              const BanerAdsScreen(),
-              height20,
-
-              /// 🔥 PREMIUM HERO CARD (HOME STYLE)
-              PremiumHeroCard(
-                title: characters.title,
-                image: characters.image!,
-                accentColor: accentColor,
-              ),
-
-              height20,
-              const NativeAdsScreen(),
-              height20,
-
-              /// CLAIM BUTTON
-              CommonButton(
-                title: "Claim",
-                style: AppTextStyle.bold16,
-                onPressed: () => _onClaim(context),
-              ),
-
-              height25,
-
-              /// DESCRIPTION
-              if (characters.description != null)
-                Text(
-                  characters.description!,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyle.regular14.copyWith(
-                    color: AppColors.textSecondary,
-                    height: 1.6,
+              // --- BACKGROUND DECORATION ---
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 400,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.primary.withOpacity(0.1),
+                        AppColors.transparent,
+                      ],
+                    ),
                   ),
                 ),
+              ),
+
+              ListView(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
+                children: [
+                  const BanerAdsScreen(),
+                  const SizedBox(height: 24),
+
+                  // --- HERO IMAGE DISPLAY ---
+                  ModernGlassCard(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: size.width * 0.5,
+                              height: size.width * 0.5,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.primary.withOpacity(0.1),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withOpacity(0.05),
+                                    blurRadius: 40,
+                                    spreadRadius: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Hero(
+                              tag: characters.title,
+                              child: Image.asset(
+                                characters.image!,
+                                height: 220,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                        Text(
+                          characters.title,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.white,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        if (characters.description != null) ...[
+                          const SizedBox(height: 16),
+                          Text(
+                            characters.description!,
+                            textAlign: TextAlign.center,
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: AppColors.darkTextSecondary,
+                                      height: 1.6,
+                                    ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+                  const NativeAdsScreen(),
+                  const SizedBox(height: 32),
+
+                  // --- CLAIM ACTION ---
+                  ModernGlassCard(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: AppColors.accent.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.auto_awesome_rounded,
+                                color: AppColors.accent,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Ready to Unlock?",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Finish the steps to claim this item",
+                                    style: TextStyle(
+                                      color: AppColors.darkTextSecondary,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        ModernGradientButton(
+                          text: "CLAIM NOW",
+                          onPressed: () => _onClaim(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
+          bottomNavigationBar: const BanerAdsScreen(),
         ),
       ),
     );
@@ -93,108 +197,6 @@ class CharactersDetalisScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => NickNameScreen(model: characters),
-      ),
-    );
-  }
-}
-
-/// ===================================================================
-/// 🔥 SAME DESIGN AS HOME CARD (BUT BIG)
-/// ===================================================================
-class PremiumHeroCard extends StatelessWidget {
-  final String title;
-  final String image;
-  final Color accentColor;
-
-  const PremiumHeroCard({
-    super.key,
-    required this.title,
-    required this.image,
-    required this.accentColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        color: const Color(0xFF2C2466),
-      ),
-      child: Stack(
-        children: [
-          /// LEFT ACCENT BAR
-          Positioned(
-            left: 0,
-            top: 60,
-            bottom: 60,
-            child: Container(
-              width: 5,
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-
-          /// RIGHT ACCENT BAR
-          Positioned(
-            right: 0,
-            top: 60,
-            bottom: 60,
-            child: Container(
-              width: 5,
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-
-          /// CONTENT
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Spacer(),
-              Container(
-                height: 110,
-                width: 110,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3B338A),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.contain,
-                ),
-              ),
-              Spacer(),
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(18)),
-                ),
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

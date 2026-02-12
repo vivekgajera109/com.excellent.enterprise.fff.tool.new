@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:fff_skin_tools/common/modern_ui.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fff_skin_tools/common/Ads/ads_card.dart';
@@ -8,9 +9,6 @@ import 'package:fff_skin_tools/common/common_button/common_button.dart';
 import 'package:fff_skin_tools/common/global_wrapper.dart';
 
 import 'package:fff_skin_tools/constants/app_colors.dart';
-import 'package:fff_skin_tools/constants/app_style.dart';
-import 'package:fff_skin_tools/constants/static_decoration.dart';
-
 import 'package:fff_skin_tools/model/home_item_model.dart';
 import 'package:fff_skin_tools/screen/home_screen.dart';
 
@@ -19,62 +17,143 @@ class ClaimScreen extends StatelessWidget {
 
   const ClaimScreen({super.key, required this.model});
 
-  Color get accentColor => AppColors.accent;
-
   @override
   Widget build(BuildContext context) {
     return GlobalWrapper(
       child: CommonWillPopScope(
         child: Scaffold(
-          backgroundColor: AppColors.background,
-          bottomNavigationBar: const BanerAdsScreen(),
-
-          /// ---------------- APP BAR ----------------
           appBar: CommonAppBar(
             title: model.title,
             showBackButton: true,
           ),
-
-          /// ---------------- BODY ----------------
-          body: ListView(
-            padding: const EdgeInsets.all(16),
+          bottomNavigationBar: const BanerAdsScreen(),
+          body: Stack(
             children: [
-              /// TOP BANNER
-              const BanerAdsScreen(),
-              height20,
-
-              /// PREMIUM HERO CARD
-              _PremiumClaimHero(
-                title: model.title,
-                image: model.image!,
-                accentColor: accentColor,
-              ),
-
-              height20,
-
-              /// NATIVE AD
-              const NativeAdsScreen(),
-              height20,
-
-              /// CLAIM BUTTON
-              CommonButton(
-                title: "Claim Reward",
-                style: AppTextStyle.bold16,
-                onPressed: () => _onClaim(context),
-              ),
-
-              height20,
-
-              /// DESCRIPTION
-              if (model.subTitle != null)
-                Text(
-                  model.subTitle!,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyle.regular14.copyWith(
-                    color: AppColors.textSecondary,
-                    height: 1.5,
+              // --- DECORATIVE BACKGROUND ---
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 400,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.success.withOpacity(0.05),
+                        AppColors.transparent,
+                      ],
+                    ),
                   ),
                 ),
+              ),
+
+              ListView(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
+                children: [
+                  const BanerAdsScreen(),
+                  const SizedBox(height: 24),
+
+                  // --- ITEM PREVIEW ---
+                  ModernGlassCard(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.success.withOpacity(0.1),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.success.withOpacity(0.1),
+                                blurRadius: 40,
+                                spreadRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.check_circle_rounded,
+                            color: AppColors.success,
+                            size: 64,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        const Text(
+                          "CONGRATULATIONS",
+                          style: TextStyle(
+                            color: AppColors.success,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          model.title,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.white,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        if (model.subTitle != null) ...[
+                          const SizedBox(height: 16),
+                          Text(
+                            model.subTitle!,
+                            textAlign: TextAlign.center,
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: AppColors.darkTextSecondary,
+                                      height: 1.6,
+                                    ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+                  const NativeAdsScreen(),
+                  const SizedBox(height: 32),
+
+                  // --- FINAL CLAIM ACTION ---
+                  ModernGlassCard(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        const Text(
+                          "Final Step",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Click the button below to process your reward request.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.darkTextSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ModernGradientButton(
+                          text: "REDEEM NOW",
+                          gradient: AppColors.accentGradient,
+                          onPressed: () => _onClaim(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -82,7 +161,6 @@ class ClaimScreen extends StatelessWidget {
     );
   }
 
-  /// ---------------- CLAIM HANDLER ----------------
   Future<void> _onClaim(BuildContext context) async {
     await CommonOnTap.openUrl();
     await Future.delayed(const Duration(milliseconds: 700));
@@ -99,104 +177,6 @@ class ClaimScreen extends StatelessWidget {
   }
 }
 
-class _PremiumClaimHero extends StatelessWidget {
-  final String title;
-  final String image;
-  final Color accentColor;
-
-  const _PremiumClaimHero({
-    required this.title,
-    required this.image,
-    required this.accentColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 220,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: const Color(0xFF2C2466),
-      ),
-      child: Stack(
-        children: [
-          /// LEFT BAR
-          Positioned(
-            left: 0,
-            top: 55,
-            bottom: 55,
-            child: Container(
-              width: 5,
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-
-          /// RIGHT BAR
-          Positioned(
-            right: 0,
-            top: 55,
-            bottom: 55,
-            child: Container(
-              width: 5,
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-
-          /// CONTENT
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const Spacer(),
-              Container(
-                height: 120,
-                width: 120,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3B338A),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.contain,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(24),
-                  ),
-                ),
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _PremiumSuccessDialog extends StatelessWidget {
   final String title;
 
@@ -205,41 +185,57 @@ class _PremiumSuccessDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: const Color(0xFF2C2466),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      child: ModernGlassCard(
+        padding: const EdgeInsets.all(32),
+        borderRadius: BorderRadius.circular(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.celebration_rounded,
-              size: 60,
-              color: AppColors.accent,
-            ),
-            height15,
-            Text(
-              "Congratulations!",
-              style: AppTextStyle.bold20.copyWith(
-                color: AppColors.white,
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: AppColors.primaryGradient,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.3),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.task_alt_rounded,
+                size: 48,
+                color: Colors.white,
               ),
             ),
-            height10,
-            Text(
-              "Your $title will be added to your collection within 42 hours.",
+            const SizedBox(height: 24),
+            const Text(
+              "Redemption Success!",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
               textAlign: TextAlign.center,
-              style: AppTextStyle.regular14.copyWith(
-                color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "The item \"$title\" has been queued for delivery. Expect it in your game inbox within 48 hours.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.darkTextSecondary,
+                fontSize: 14,
                 height: 1.5,
               ),
             ),
-            height20,
-            CommonButton(
-              title: "Back to Home",
-              backgroundColor: AppColors.accent,
-              textColor: Colors.black,
+            const SizedBox(height: 32),
+            ModernGradientButton(
+              text: "GREAT!",
+              height: 54,
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,

@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fff_skin_tools/screen/home_screen.dart';
+import 'package:fff_skin_tools/common/modern_ui.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fff_skin_tools/common/Ads/ads_card.dart';
@@ -10,6 +10,7 @@ import 'package:fff_skin_tools/common/common_button/common_button.dart';
 
 import 'package:fff_skin_tools/model/home_item_model.dart';
 import 'package:fff_skin_tools/screen/characters_detalis_screen.dart';
+import 'package:fff_skin_tools/constants/app_colors.dart';
 
 class CharactersScreen extends StatelessWidget {
   final List<HomeItemModel> characters;
@@ -23,22 +24,8 @@ class CharactersScreen extends StatelessWidget {
     this.isSquared = true,
   });
 
-  Color _getAccentColor(int index) {
-    final colors = [
-      Color(0xFFFFC857),
-      Color(0xFFFF5C8A),
-      Color(0xFF4ADE80),
-      Color(0xFF60A5FA),
-      Color(0xFFFBBF24),
-      Color(0xFFFB7185),
-    ];
-    return colors[index % colors.length];
-  }
-
   @override
   Widget build(BuildContext context) {
-    final totalGroups = (characters.length / 4).ceil();
-
     return GlobalWrapper(
       child: CommonWillPopScope(
         child: Scaffold(
@@ -46,66 +33,71 @@ class CharactersScreen extends StatelessWidget {
             title: appBarTitle,
             showBackButton: true,
           ),
-          body: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
-            itemCount: totalGroups + 1,
-            itemBuilder: (context, index) {
-              /// TOP BANNER
-              if (index == 0) {
-                return const Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: BanerAdsScreen(),
-                );
-              }
-
-              final groupIndex = index - 1;
-              final startIndex = groupIndex * 4;
-              final endIndex = (startIndex + 4 <= characters.length)
-                  ? startIndex + 4
-                  : characters.length;
-
-              final groupItems = characters.sublist(startIndex, endIndex);
-
-              return Column(
-                children: [
-                  /// ---------------- GRID ----------------
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 0.82,
+          body: Stack(
+            children: [
+              // Background Gradient
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.primary.withOpacity(0.05),
+                        AppColors.darkBackground,
+                      ],
                     ),
-                    itemCount: groupItems.length,
-                    itemBuilder: (context, itemIndex) {
-                      final item = groupItems[itemIndex];
-
-                      return TrendingItemCard(
-                        title: item.title,
-                        image: item.image!,
-                        accentColor: _getAccentColor(startIndex + itemIndex),
-                        onTap: () => _openDetails(
-                          context,
-                          item,
-                          isSquared,
-                        ),
-                      );
-                    },
                   ),
+                ),
+              ),
 
-                  /// ---------------- NATIVE AD ----------------
-                  if (groupIndex != totalGroups - 1)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: NativeAdsScreen(),
+              ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                itemCount: characters.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return const Padding(
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: BanerAdsScreen(),
+                    );
+                  }
+
+                  // Group by 2 for the grid-like feel but in a list
+                  if ((index - 1) % 2 != 0) return const SizedBox.shrink();
+
+                  final item1 = characters[index - 1];
+                  final hasNext = index < characters.length;
+                  final item2 = hasNext ? characters[index] : null;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ModernHomeCard(
+                            item: item1,
+                            onTap: () =>
+                                _openDetails(context, item1, isSquared),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: item2 != null
+                              ? ModernHomeCard(
+                                  item: item2,
+                                  onTap: () =>
+                                      _openDetails(context, item2, isSquared),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ],
                     ),
-                ],
-              );
-            },
+                  );
+                },
+              ),
+            ],
           ),
+          bottomNavigationBar: const BanerAdsScreen(),
         ),
       ),
     );

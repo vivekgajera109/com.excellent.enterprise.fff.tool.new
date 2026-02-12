@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '992840934015',
     projectId: 'fff-skin-tool-new-5cfd8',
     storageBucket: 'fff-skin-tool-new-5cfd8.firebasestorage.app',
-    iosBundleId: 'com.excellent.enterprise.fff.tool.new',
+    iosBundleId: 'com.excellent.enterprise.fff.tool.app',
   );
 }

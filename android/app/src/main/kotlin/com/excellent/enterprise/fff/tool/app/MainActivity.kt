@@ -1,4 +1,4 @@
-package com.excellent.enterprise.fff.tool.new
+package com.excellent.enterprise.fff.tool.app
 
 import io.flutter.embedding.android.FlutterActivity
 

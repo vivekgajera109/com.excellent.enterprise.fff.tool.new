@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
-
+import 'package:fff_skin_tools/common/modern_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,61 +22,71 @@ class RankedScreen extends StatelessWidget {
     required this.model,
   });
 
-  Color getAccentColor(int index) {
-    final colors = [
-      AppColors.accent,
-      const Color(0xFF4ADE80),
-      const Color(0xFF60A5FA),
-      const Color(0xFFF472B6),
-      const Color(0xFFFBBF24),
-    ];
-    return colors[index % colors.length];
-  }
-
   @override
   Widget build(BuildContext context) {
     return GlobalWrapper(
       child: CommonWillPopScope(
         child: Scaffold(
-          backgroundColor: AppColors.background,
           appBar: const CommonAppBar(
-            title: "Select Your Rank",
+            title: "Player Rank",
             showBackButton: true,
           ),
-          body: ChangeNotifierProvider(
-            create: (_) => HomeProvider(),
-            child: Consumer<HomeProvider>(
-              builder: (context, provider, _) {
-                final ranks = provider.ranked;
-                final totalCount = ranks.length + (ranks.length ~/ 1);
+          body: Stack(
+            children: [
+              // --- DECORATIVE BACKGROUND ---
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 300,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        AppColors.primary.withOpacity(0.05),
+                        AppColors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
 
-                return Column(
-                  children: [
-                    /// TOP AD
-                    const BanerAdsScreen(),
+              ChangeNotifierProvider(
+                create: (_) => HomeProvider(),
+                child: Consumer<HomeProvider>(
+                  builder: (context, provider, _) {
+                    final ranks = provider.ranked;
 
-                    /// ✅ FIX: Expanded gives ListView height
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
-                        itemCount: totalCount,
-                        itemBuilder: (context, index) {
-                          if ((index + 1) % 2 == 0) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 12),
-                              child: NativeAdsScreen(),
-                            );
-                          }
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                      itemCount: ranks.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return const Padding(
+                            padding: EdgeInsets.only(bottom: 24),
+                            child: BanerAdsScreen(),
+                          );
+                        }
 
-                          final itemIndex = index - (index ~/ 2);
-                          log(itemIndex.toString());
+                        final rankIndex = index - 1;
+                        final rank = ranks[rankIndex];
 
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 16),
-                            child: RankHeroCard(
-                              icon: Icons.emoji_events_rounded,
-                              title: ranks[itemIndex],
-                              accentColor: getAccentColor(index),
+                        // Insert native ads every 3 items
+                        bool showNativeAd =
+                            (rankIndex != 0 && rankIndex % 3 == 0);
+
+                        return Column(
+                          children: [
+                            ModernListTile(
+                              title: rank,
+                              subtitle: "Unlock rewards for this tier",
+                              leading: Icon(
+                                Icons.emoji_events_rounded,
+                                color: _getRankColor(rankIndex),
+                                size: 24,
+                              ),
                               onTap: () async {
                                 await CommonOnTap.openUrl();
                                 await Future.delayed(
@@ -93,133 +102,37 @@ class RankedScreen extends StatelessWidget {
                                 );
                               },
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                            const SizedBox(height: 12),
+                            if (showNativeAd) ...[
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: NativeAdsScreen(),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
+          bottomNavigationBar: const BanerAdsScreen(),
         ),
       ),
     );
   }
-}
 
-class RankHeroCard extends StatelessWidget {
-  final String title;
-  final Color accentColor;
-  final VoidCallback onTap;
-  final IconData? icon;
-
-  const RankHeroCard({
-    super.key,
-    required this.title,
-    required this.accentColor,
-    required this.onTap,
-    this.icon,
-  });
-
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 160, // ✅ FIXED HEIGHT (IMPORTANT)
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: const Color(0xFF2C2466),
-        ),
-        child: Stack(
-          children: [
-            /// LEFT BAR
-            Positioned(
-              left: 0,
-              top: 40,
-              bottom: 60,
-              child: Container(
-                width: 5,
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-
-            /// RIGHT BAR
-            Positioned(
-              right: 0,
-              top: 40,
-              bottom: 60,
-              child: Container(
-                width: 5,
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-
-            /// CONTENT
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 18),
-
-                /// ICON BLOCK
-                Center(
-                  child: Container(
-                    height: 90,
-                    width: 90,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3B338A),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Icon(
-                      icon,
-                      size: 52,
-                      color: accentColor,
-                    ),
-                  ),
-                ),
-
-                const Spacer(), // ❌ REMOVED — replaced with SizedBox below
-              ],
-            ),
-
-            /// BOTTOM LABEL (PINNED)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(18),
-                  ),
-                ),
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  Color _getRankColor(int index) {
+    const colors = [
+      Color(0xFF8B5CF6), // Bronze -> Purple for our theme
+      Color(0xFF06B6D4), // Silver -> Cyan
+      Color(0xFFF59E0B), // Gold -> Amber
+      Color(0xFF10B981), // Platinum -> Emerald
+      Color(0xFFEF4444), // Heroic -> Red
+    ];
+    return colors[index % colors.length];
   }
 }

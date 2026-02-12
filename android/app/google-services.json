@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:992840934015:android:ba4d135f504f6ca22c954a",
+        "mobilesdk_app_id": "1:992840934015:android:670d8d76df6a27be2c954a",
         "android_client_info": {
-          "package_name": "com.excellent.enterprise.fff.tool.new"
+          "package_name": "com.excellent.enterprise.fff.tool.app"
         }
       },
       "oauth_client": [],

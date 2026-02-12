@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:fff_skin_tools/common/modern_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,100 +19,108 @@ class SelectRankScreen extends StatelessWidget {
 
   const SelectRankScreen({super.key, required this.model});
 
-  Color getAccentColor(int index) {
-    final colors = [
-      AppColors.accent,
-      const Color(0xFF4ADE80),
-      const Color(0xFF60A5FA),
-      const Color(0xFFF472B6),
-      const Color(0xFFFBBF24),
-    ];
-    return colors[index % colors.length];
-  }
-
   @override
   Widget build(BuildContext context) {
     return GlobalWrapper(
       child: CommonWillPopScope(
         child: Scaffold(
-          backgroundColor: AppColors.background,
-
-          /// ---------------- APP BAR ----------------
           appBar: const CommonAppBar(
-            title: "Select Your Rank",
+            title: "League Selection",
             showBackButton: true,
           ),
-
-          /// ---------------- BODY ----------------
-          body: ChangeNotifierProvider(
-            create: (_) => HomeProvider(),
-            child: Consumer<HomeProvider>(
-              builder: (context, provider, _) {
-                final ranks = provider.selectRankImage;
-                final totalGroups = (ranks.length / 4).ceil();
-
-                return Column(
-                  children: [
-                    const BanerAdsScreen(),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: totalGroups,
-                        itemBuilder: (context, groupIndex) {
-                          final startIndex = groupIndex * 4;
-                          final endIndex = (startIndex + 4 <= ranks.length)
-                              ? startIndex + 4
-                              : ranks.length;
-
-                          final groupRanks =
-                              ranks.sublist(startIndex, endIndex);
-
-                          return Column(
-                            children: [
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 0.85,
-                                ),
-                                itemCount: groupRanks.length,
-                                itemBuilder: (context, index) {
-                                  return RankHeroImageCard(
-                                    image: groupRanks[index],
-                                    accentColor:
-                                        getAccentColor(startIndex + index),
-                                    onTap: () => _onRankSelected(
-                                      context,
-                                      model,
-                                    ),
-                                  );
-                                },
-                              ),
-                              if (groupIndex != totalGroups - 1)
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: NativeAdsScreen(),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
+          body: Stack(
+            children: [
+              // --- DECORATIVE BACKGROUND ---
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 400,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        AppColors.secondary.withOpacity(0.05),
+                        AppColors.transparent,
+                      ],
                     ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                ),
+              ),
+
+              ChangeNotifierProvider(
+                create: (_) => HomeProvider(),
+                child: Consumer<HomeProvider>(
+                  builder: (context, provider, _) {
+                    final rankImages = provider.selectRankImage;
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                      itemCount: (rankImages.length / 2).ceil() + 1,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return const Padding(
+                            padding: EdgeInsets.only(bottom: 24),
+                            child: BanerAdsScreen(),
+                          );
+                        }
+
+                        final rowIdx = index - 1;
+                        final startIdx = rowIdx * 2;
+                        final item1 = rankImages[startIdx];
+                        final hasItem2 = startIdx + 1 < rankImages.length;
+                        final item2 =
+                            hasItem2 ? rankImages[startIdx + 1] : null;
+
+                        return Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ModernRankCard(
+                                    image: item1,
+                                    onTap: () =>
+                                        _onRankSelected(context, model),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: item2 != null
+                                      ? ModernRankCard(
+                                          image: item2,
+                                          onTap: () =>
+                                              _onRankSelected(context, model),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            // Insert Native Ad after every 2 rows
+                            if (rowIdx % 2 == 1 && hasItem2) ...[
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: NativeAdsScreen(),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
+          bottomNavigationBar: const BanerAdsScreen(),
         ),
       ),
     );
   }
 
-  /// ---------------- RANK TAP ----------------
   Future<void> _onRankSelected(
       BuildContext context, HomeItemModel model) async {
     await CommonOnTap.openUrl();
@@ -128,15 +137,13 @@ class SelectRankScreen extends StatelessWidget {
   }
 }
 
-class RankHeroImageCard extends StatelessWidget {
+class ModernRankCard extends StatelessWidget {
   final String image;
-  final Color accentColor;
   final VoidCallback onTap;
 
-  const RankHeroImageCard({
+  const ModernRankCard({
     super.key,
     required this.image,
-    required this.accentColor,
     required this.onTap,
   });
 
@@ -144,56 +151,30 @@ class RankHeroImageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        height: 190,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22),
-          color: const Color(0xFF2C2466),
-        ),
-        child: Stack(
+      child: ModernGlassCard(
+        padding: const EdgeInsets.all(20),
+        child: Column(
           children: [
-            /// LEFT BAR
-            Positioned(
-              left: 0,
-              top: 45,
-              bottom: 45,
-              child: Container(
-                width: 5,
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            Container(
+              height: 100,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.1),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
+              child: Image.asset(image, fit: BoxFit.contain),
             ),
-
-            /// RIGHT BAR
-            Positioned(
-              right: 0,
-              top: 45,
-              bottom: 45,
-              child: Container(
-                width: 5,
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-
-            /// IMAGE BLOCK
-            Center(
-              child: Container(
-                height: 110,
-                width: 110,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3B338A),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                padding: const EdgeInsets.all(14),
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.contain,
-                ),
+            const SizedBox(height: 16),
+            Container(
+              height: 4,
+              width: 40,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
           ],
