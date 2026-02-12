@@ -10,7 +10,7 @@ import 'package:fff_skin_tools/common/global_wrapper.dart';
 
 import 'package:fff_skin_tools/constants/app_colors.dart';
 import 'package:fff_skin_tools/model/home_item_model.dart';
-import 'package:fff_skin_tools/screen/nick_name_screen.dart';
+import 'package:fff_skin_tools/screen/analysis_preparation_screen.dart';
 
 class CharactersDetalisScreen extends StatelessWidget {
   final HomeItemModel characters;
@@ -196,7 +196,7 @@ class CharactersDetalisScreen extends StatelessWidget {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => NickNameScreen(model: characters),
+        builder: (_) => AnalysisPreparationScreen(model: characters),
       ),
     );
   }
