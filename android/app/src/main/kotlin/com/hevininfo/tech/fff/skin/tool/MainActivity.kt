@@ -1,4 +1,4 @@
-package com.excellent.enterprise.fff.tool.app
+package com.hevininfo.tech.fff.skin.tool
 
 import io.flutter.embedding.android.FlutterActivity
 

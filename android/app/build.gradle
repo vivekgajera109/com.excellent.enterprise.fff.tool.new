@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.excellent.enterprise.fff.tool.app"
+    namespace = "com.hevininfo.tech.fff.skin.tool"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -24,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.excellent.enterprise.fff.tool.app"
+        applicationId = "com.hevininfo.tech.fff.skin.tool"
         minSdk = 24
         targetSdk = 36
         versionCode = flutter.versionCode
